@@ -65,13 +65,13 @@ import {ArticleService} from '../../articles/services/article.service';
           </div>
           <div class="header-text ml-auto d-none d-lg-block">
             <div class="card card-body mx-auto text-white text-right">
-              <h1 [innerHTML]="title"></h1>
+              <h1 style="white-space: pre;">{{title}}</h1>
             </div>
           </div>
         </div>
       </div>
       <div class="header-text-small d-lg-none d-flex text-center">
-        <h1 class="mx-auto" [innerHTML]="title"></h1>
+        <h1 class="mx-auto" style="white-space: pre;">{{title}}</h1>
       </div>
     </header>
   `

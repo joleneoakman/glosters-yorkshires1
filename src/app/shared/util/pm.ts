@@ -4,18 +4,16 @@ import {EventEmitter} from '@angular/core';
 /**
  * Very basic presentation model for local UI state management
  */
-export class PM<V, S> {
+export class PM<S> {
 
   //
   // Fields
   //
 
+  private readonly initializer: () => S;
   private readonly logic: ((current: S, candidate: S) => S);
-  private readonly initializer: (value: V) => S;
-  private readonly composer: (state: S) => V;
-  private readonly valueEmitter: EventEmitter<V>;
+  // Todo: observable value emitter ...
   private readonly subject: BehaviorSubject<S>;
-  private currentValue: V;
 
   //
   // Builder methods
@@ -24,21 +22,9 @@ export class PM<V, S> {
   /**
    * Create a PM where the public value and private state is the same object. This value is expected to be immutable.
    */
-  static createSimplePM<V>(): PMBuilder<V, V> {
-    return new PMBuilder<V, V>()
-      .setInitializer((val) => val)
-      .setComposer((state) => state)
-      .setLogic((current, candidate) => candidate);
-  }
-
-  /**
-   * Create a 'complex' PM where the public value is converted to (initializer) and from (composer) the inner UI state.
-   * Both value and state are expected to be immutable.
-   */
-  static createComplexPM<V, S>(): PMBuilder<V, S> {
-    return new PMBuilder<V, S>()
+  static create<S>(): PMBuilder<S> {
+    return new PMBuilder<S>()
       .setInitializer(() => null)
-      .setComposer(() => null)
       .setLogic((current, candidate) => candidate);
   }
 
@@ -46,18 +32,11 @@ export class PM<V, S> {
   // Constructor
   //
 
-  constructor(initializer: (V) => S,
-              composer: (S) => V,
-              logic: ((current: S, candidate: S) => S),
-              valueEmitter: EventEmitter<V>) {
+  constructor(initializer: () => S,
+              logic: ((current: S, candidate: S) => S)) {
     // Initializer is required (value => state)
     if (!initializer) {
-      throw new Error('Specify a valid initializer (value => state)');
-    }
-
-    // Composer is required (state => value)
-    if (!composer) {
-      throw new Error('Specify a valid composer (state => value)');
+      throw new Error('Specify a valid initializer (() => S)');
     }
 
     // Logic is required ((current, candidate) => state)
@@ -72,10 +51,8 @@ export class PM<V, S> {
 
     this.logic = logic;
     this.initializer = initializer;
-    this.composer = composer;
-    this.valueEmitter = valueEmitter;
-    this.subject = new BehaviorSubject<S>(null);
-    this.reset(null); // Initializer should be able to handle null state
+    this.subject = new BehaviorSubject<S>(<S>{});
+    this.reset(); // Initializer should be able to handle null state
   }
 
   //
@@ -90,11 +67,8 @@ export class PM<V, S> {
     callback(this.subject.getValue());
   }
 
-  public reset(newValue: V) {
-    if (JSON.stringify(newValue) !== JSON.stringify(this.currentValue)) {
-      this.currentValue = newValue;
-      this.update(this.initializer(newValue));
-    }
+  public reset() {
+    this.update(this.initializer());
   }
 
   public update(partialCandidate: Partial<S>) {
@@ -111,15 +85,6 @@ export class PM<V, S> {
     // Publish new state (only if changed)
     if (JSON.stringify(current) !== JSON.stringify(newState)) {
       this.subject.next(newState);
-
-      // Emit new value (if available)
-      if (this.valueEmitter && this.composer) {
-        const newValue = this.composer(newState);
-        if (JSON.stringify(newValue) !== JSON.stringify(this.currentValue)) {
-          this.currentValue = newValue;
-          this.valueEmitter.emit(newValue);
-        }
-      }
     }
   }
 
@@ -142,41 +107,36 @@ export class PM<V, S> {
   }
 }
 
-export class PMBuilder<V, S> {
+export class PMBuilder<S> {
 
   private logic: ((current: S, candidate: S) => S);
-  private initializer: (value: V) => S;
-  private composer: (staet: S) => V;
-  private valueEmitter: EventEmitter<V>;
+  private initializer: () => S;
 
   constructor() {
   }
 
-  public build(): PM<V, S> {
-    return new PM<V, S>(this.initializer, this.composer, this.logic, this.valueEmitter);
+  public build(): PM<S> {
+    return new PM<S>(this.initializer, this.logic);
   }
 
   //
   // Setters
   //
 
-  public setLogic(logic: ((current: S, candidate: S) => S)): PMBuilder<V, S> {
-    this.logic = logic;
+  public setInitialState(initialState: S): PMBuilder<S> {
+    this.initializer = () => {
+      return initialState;
+    };
     return this;
   }
 
-  public setInitializer(initializer: (value: V) => S): PMBuilder<V, S> {
+  public setInitializer(initializer: () => S): PMBuilder<S> {
     this.initializer = initializer;
     return this;
   }
 
-  public setComposer(composer: (state: S) => V): PMBuilder<V, S> {
-    this.composer = composer;
-    return this;
-  }
-
-  public setValueEmitter(valueEmitter: EventEmitter<V>): PMBuilder<V, S> {
-    this.valueEmitter = valueEmitter;
+  public setLogic(logic: ((current: S, candidate: S) => S)): PMBuilder<S> {
+    this.logic = logic;
     return this;
   }
 }

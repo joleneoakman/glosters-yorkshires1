@@ -1,40 +1,36 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {PM} from '../../../shared/util/pm';
-import {Article} from '../models/article';
-import {ArticleService} from '../services/article.service';
 import {LoginService} from '../../login/login.service';
 
 @Component({
   selector: 'app-article',
   styles: [`
-    
+
   `],
   template: `
     <app-article-view *ngIf="!(state$ | async).loggedIn"
-                      [article]="(state$ | async).article"></app-article-view>
+                      [articleId]="(state$ | async).articleId"></app-article-view>
     <app-article-editor *ngIf="(state$ | async).loggedIn"
-                        [article]="(state$ | async).article"
-                        (articleChanged)="this.pm.update({article: $event})"></app-article-editor>
+                        [articleId]="(state$ | async).articleId"></app-article-editor>
   `
 })
 export class ArticleComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() articleId: string;
 
-  protected pm: PM<void, ArticleUI.State> = PM.createComplexPM<void, ArticleUI.State>()
+  protected pm: PM<UI.State> = PM.create<UI.State>()
     .setInitializer(() => {
       return {
-        article: null,
+        articleId: null,
         loggedIn: false
       };
     })
     .build();
-  protected state$: Observable<ArticleUI.State> = this.pm.observe();
+  protected state$: Observable<UI.State> = this.pm.observe();
   private loginSubscription: Subscription;
 
-  constructor(private articleService: ArticleService,
-              private loginService: LoginService) {
+  constructor(private loginService: LoginService) {
   }
 
   ngOnInit(): void {
@@ -47,16 +43,14 @@ export class ArticleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.articleService.getArticle(this.articleId)
-      .subscribe(article => {
-        this.pm.update({article: article});
-      });
+    this.pm.update({articleId: this.articleId});
   }
 }
 
-namespace ArticleUI {
+namespace UI {
   export interface State {
-    article: Article;
+    articleId: string;
     loggedIn: boolean;
   }
 }
+

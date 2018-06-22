@@ -53,7 +53,7 @@ export class SnippetComponent implements OnChanges {
   @Input() showBorder: boolean = true;
   @Input() showTitle: boolean = true;
 
-  protected pm: PM<void, Article> = PM.createComplexPM<void, Article>().build();
+  protected pm: PM<Article> = PM.create<Article>().build();
   protected state$ = this.pm.observe();
 
   constructor(private articleService: ArticleService) {

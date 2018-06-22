@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 @Injectable()
 export class LoginService {
 
-  private loggedIn: Subject<boolean> = new BehaviorSubject<boolean>(false);
+  private loggedIn: Subject<boolean> = new BehaviorSubject<boolean>(true);
 
   constructor() {
   }
