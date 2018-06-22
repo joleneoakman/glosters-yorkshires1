@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+* {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+html, body {
+  font-weight: 400;
+}
+
+body {
+  overflow-y:scroll;
+  background-color: #dafaec;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 400;
+}
