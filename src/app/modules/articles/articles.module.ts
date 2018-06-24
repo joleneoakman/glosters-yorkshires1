@@ -7,24 +7,22 @@ import {ArticleEditorComponent} from './components/article-editor.component';
 import {LoginModule} from '../login/login.module';
 import {ArticleViewComponent} from './components/article-view.component';
 import {FormsModule} from '@angular/forms';
-import {TextareaAutosizeModule} from 'ngx-textarea-autosize';
-import {AutoresizeDirective} from './directives/autoresize.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
     ArticleComponent,
     ArticleViewComponent,
-    ArticleEditorComponent,
-    AutoresizeDirective
+    ArticleEditorComponent
   ],
   imports: [
     BrowserAnimationsModule,
     RouterModule,
     FormsModule,
     CommonModule,
-    LoginModule,
-    TextareaAutosizeModule
+    SharedModule,
+    LoginModule
   ],
   exports: [
     ArticleComponent

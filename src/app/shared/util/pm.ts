@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {EventEmitter} from '@angular/core';
 
 /**
@@ -14,6 +14,7 @@ export class PM<S> {
   private readonly logic: ((current: S, candidate: S) => S);
   // Todo: observable value emitter ...
   private readonly subject: BehaviorSubject<S>;
+  private subscriptions = {};
 
   //
   // Builder methods
@@ -56,7 +57,7 @@ export class PM<S> {
   }
 
   //
-  // Public API
+  // State changes
   //
 
   public observe(): Observable<S> {
@@ -104,6 +105,29 @@ export class PM<S> {
     const copy = [...this.subject.getValue()[field]];
     copy.splice(index, 1);
     this.update(Object.assign({}, this.subject.getValue(), {[field]: copy}));
+  }
+
+  //
+  // Subscriptions
+  //
+
+  public handleSubscription(id: string, subscription: Subscription) {
+    this.unsubscribe(id);
+    this.subscriptions[id] = subscription;
+  }
+
+  public unsubscribe(id: string) {
+    const currentSubscription: Subscription = this.subscriptions[id];
+    if (currentSubscription) {
+      currentSubscription.unsubscribe();
+      delete this.subscriptions[id];
+    }
+  }
+
+  public unsubscribeAll() {
+    for (let id in this.subscriptions) {
+      this.unsubscribe(id);
+    }
   }
 }
 

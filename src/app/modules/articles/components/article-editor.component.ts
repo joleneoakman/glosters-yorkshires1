@@ -1,17 +1,16 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {Article} from '../models/article';
-import {Observable} from 'rxjs';
 import {PM} from '../../../shared/util/pm';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ArticleService} from '../services/article.service';
-import reset = UI.reset;
+import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-article-editor',
   styles: [`
     .label {
       text-align: end;
-      padding-top: 7px;
+      padding-top: 6px;
     }
 
     .row {
@@ -19,13 +18,19 @@ import reset = UI.reset;
     }
 
     .toolbar {
-      border-top: 1px solid #ff924d;
-      background-color: #fff5a7;
+      border-top: 1px solid #ffeeba;
+      background-color: #fff3cd;
       z-index: 1000;
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
+    }
+
+    @media (max-width: 991px) {
+      .label {
+        text-align: left;
+      }
     }
   `],
   animations: [
@@ -41,53 +46,51 @@ import reset = UI.reset;
     ])
   ],
   template: `
-    <section>
-      <div class="container">
+    <section class="pb-5">
+      <div class="container card card-body">
 
-        <div class="row">
-          <div class="col-2 label text-dark">Icoon</div>
-          <div class="col-10">
-            <input class="form-control"
-                   disabled type="text"
-                   [ngModel]="(state$ | async).icon">
-          </div>
+        <div class="alert alert-warning" role="alert">
+          Hieronder kan u de website tekst aanpassen, en vervolgens op 'bewaren' klikken.
         </div>
 
         <div class="row">
-          <div class="col-2 label text-dark">Titel</div>
-          <div class="col-10">
+          <div class="col-lg-2 label text-dark">Titel</div>
+          <div class="col-lg-10">
             <textarea class="form-control"
                       autoresize
-                      [ngModel]="(state$ | async).title"
+                      rows="1"
+                      [ngModel]="(ui$ | async).title"
                       (ngModelChange)="this.pm.update({title: $event})"></textarea>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-2 label text-dark">Korte versie</div>
-          <div class="col-10">
+          <div class="col-lg-2 label text-dark">Korte tekst</div>
+          <div class="col-lg-10">
             <textarea id="snippetText"
                       autoresize
+                      rows="1"
                       class="form-control"
-                      [ngModel]="(state$ | async).snippetText"
+                      [ngModel]="(ui$ | async).snippetText"
                       (ngModelChange)="this.pm.update({snippetText: $event})"></textarea>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-2 label text-dark">Volledige versie</div>
-          <div class="col-10">
+          <div class="col-lg-2 label text-dark">Volledige tekst</div>
+          <div class="col-lg-10">
             <textarea id="fullText"
                       autoresize
+                      rows="1"
                       class="form-control"
-                      [ngModel]="(state$ | async).fullText"
+                      [ngModel]="(ui$ | async).fullText"
                       (ngModelChange)="this.pm.update({fullText: $event})"></textarea>
           </div>
         </div>
       </div>
     </section>
     <section class="toolbar"
-             *ngIf="!(state$ | async).pristine"
+             *ngIf="!(ui$ | async).pristine"
              [@flyInOut]="'in'">
       <div class="text-center">
         <button class="btn btn-danger"
@@ -100,24 +103,23 @@ import reset = UI.reset;
     </section>
   `
 })
-export class ArticleEditorComponent implements OnChanges {
+export class ArticleEditorComponent extends AbstractUi<UI.State> {
 
   @Input() articleId: string;
 
-  protected pm = PM.create<UI.State>()
-    .setInitializer(UI.initalizer)
-    .setLogic(UI.logic)
-    .build();
-  protected state$: Observable<UI.State> = this.pm.observe();
-
   constructor(private articleService: ArticleService) {
+    super(PM.create<UI.State>()
+        .setInitializer(UI.initalizer)
+        .setLogic(UI.logic)
+    );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.articleService.getArticle(this.articleId)
+  onChanges(changes: SimpleChanges): void {
+    this.pm.handleSubscription('article', this.articleService.observeArticle(this.articleId)
       .subscribe(article => {
         this.pm.update({orig: article});
-      });
+      })
+    );
   }
 
   save() {
@@ -129,11 +131,8 @@ export class ArticleEditorComponent implements OnChanges {
         snippetText: state.snippetText,
         fullText: state.fullText
       };
-      this.articleService.updateArticle(candidate)
-        .subscribe(article => {
-          this.pm.update(UI.reset(article));
-        });
-    })
+      this.articleService.updateArticle(candidate);
+    });
   }
 
   revert() {
@@ -169,7 +168,7 @@ namespace UI {
       snippetText: article ? article.snippetText : null,
       fullText: article ? article.fullText : null
     };
-  };
+  }
 
   export function logic(current: State, candidate: State): State {
     // Article changed? Reset!

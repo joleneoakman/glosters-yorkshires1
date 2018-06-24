@@ -1,4 +1,7 @@
 import {Component} from '@angular/core';
+import {LoginService} from '../login.service';
+import {PM} from '../../../shared/util/pm';
+import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-login-form',
@@ -8,20 +11,28 @@ import {Component} from '@angular/core';
     }
   `],
   template: `
-    <form>
+    <form (submit)="login()">
       <p class="h4 text-center mb-4">Log in</p>
 
-      <!-- Material input email -->
       <div class="md-form">
         <i class="fa fa-envelope prefix grey-text"></i>
-        <input type="email" id="loginUser" class="form-control">
-        <label for="loginUer">Uw gebruikersnaam</label>
+        <input type="text"
+               id="loginUser"
+               name="loginUser"
+               class="form-control"
+               [ngModel]="(ui$ | async).username"
+               (ngModelChange)="this.pm.update({username: $event})">
+        <label for="loginUser">Uw gebruikersnaam</label>
       </div>
 
-      <!-- Material input password -->
       <div class="md-form">
         <i class="fa fa-lock prefix grey-text"></i>
-        <input type="password" id="loginPassword" class="form-control">
+        <input type="password"
+               id="loginPassword"
+               name="loginPassword"
+               class="form-control"
+               [ngModel]="(ui$ | async).password"
+               (ngModelChange)="this.pm.update({password: $event})">
         <label for="loginPassword">Uw wachtwoord</label>
       </div>
 
@@ -31,5 +42,22 @@ import {Component} from '@angular/core';
     </form>
   `
 })
-export class LoginFormComponent {
+export class LoginFormComponent extends AbstractUi<UI.State> {
+
+  constructor(private loginService: LoginService) {
+    super(PM.create<UI.State>());
+  }
+
+  login() {
+    this.pm.invoke(state => {
+      this.loginService.login(state.username, state.password);
+    })
+  }
+}
+
+namespace UI {
+  export interface State {
+    username: string;
+    password: string;
+  }
 }

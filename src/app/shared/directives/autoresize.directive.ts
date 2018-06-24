@@ -1,13 +1,13 @@
 import {AfterContentChecked, Directive, ElementRef, Input} from '@angular/core';
 
 @Directive({
-  selector: "textarea[autoresize]" // Attribute selector
+  selector: 'textarea[autoresize]'
 })
 export class AutoresizeDirective implements AfterContentChecked {
 
   @Input('autoresize') maxHeight: number;
 
-  constructor(public element: ElementRef) {
+  constructor(public element: ElementRef<HTMLTextAreaElement>) {
   }
 
   ngAfterContentChecked() {
@@ -19,16 +19,16 @@ export class AutoresizeDirective implements AfterContentChecked {
     let newHeight;
 
     if (ta) {
-      ta.style.overflow = "hidden";
-      ta.style.height = "auto";
+      ta.style.overflow = 'hidden';
+      ta.style.height = 'auto';
       if (this.maxHeight) {
-        console.log('this.maxHeight',this.maxHeight)
+        console.log('this.maxHeight', this.maxHeight);
         newHeight = Math.min(ta.scrollHeight, this.maxHeight);
-        console.log('newHeight',newHeight)
+        console.log('newHeight', newHeight);
       } else {
         newHeight = ta.scrollHeight;
       }
-      ta.style.height = newHeight + "px";
+      ta.style.height = newHeight + 'px';
     }
   }
 }

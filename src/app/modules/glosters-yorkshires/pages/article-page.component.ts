@@ -1,25 +1,30 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {PM} from '../../../shared/util/pm';
 
 @Component({
   selector: 'app-article-page',
   template: `
-    <main class="bg-white pb-5">
-      <app-header [articleId]="articleId"></app-header>
-      <app-article [articleId]="articleId"></app-article>
+    <main class="bg-white">
+      <app-header [articleId]="(ui$ | async).articleId"></app-header>
+      <app-article [articleId]="(ui$ | async).articleId"></app-article>
     </main>
   `
 })
-export class ArticlePageComponent implements OnInit {
-
-  protected articleId: string;
+export class ArticlePageComponent extends AbstractUi<UI.State> {
 
   constructor(private route: ActivatedRoute) {
+    super(PM.create<UI.State>());
   }
 
-  ngOnInit() {
-    this.route.params.subscribe((data: { id: string }) => {
-      this.articleId = data.id;
-    });
+  onInit() {
+    this.route.params.subscribe((data: { id: string }) => this.pm.update({articleId: data.id}));
+  }
+}
+
+namespace UI {
+  export interface State {
+    articleId: string;
   }
 }

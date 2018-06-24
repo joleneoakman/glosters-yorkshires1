@@ -6,6 +6,7 @@ import {HeaderComponent} from './components/header.component';
 import {CommonModule} from '@angular/common';
 import {ArticlesModule} from '../articles/articles.module';
 import {ArticlePageComponent} from './pages/article-page.component';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import {ArticlePageComponent} from './pages/article-page.component';
   imports: [
     RouterModule,
     CommonModule,
+    SharedModule,
     ArticlesModule
   ],
   providers: [

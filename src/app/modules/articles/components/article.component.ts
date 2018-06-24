@@ -1,48 +1,39 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {Observable, Subscription} from 'rxjs';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
 import {LoginService} from '../../login/login.service';
+import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-article',
-  styles: [`
-
-  `],
   template: `
-    <app-article-view *ngIf="!(state$ | async).loggedIn"
-                      [articleId]="(state$ | async).articleId"></app-article-view>
-    <app-article-editor *ngIf="(state$ | async).loggedIn"
-                        [articleId]="(state$ | async).articleId"></app-article-editor>
+    <app-article-view *ngIf="!(ui$ | async).loggedIn"
+                      [articleId]="(ui$ | async).articleId"></app-article-view>
+    <app-article-editor *ngIf="(ui$ | async).loggedIn"
+                        [articleId]="(ui$ | async).articleId"></app-article-editor>
   `
 })
-export class ArticleComponent implements OnInit, OnChanges, OnDestroy {
+export class ArticleComponent extends AbstractUi<UI.State> {
 
   @Input() articleId: string;
 
-  protected pm: PM<UI.State> = PM.create<UI.State>()
-    .setInitializer(() => {
-      return {
-        articleId: null,
-        loggedIn: false
-      };
-    })
-    .build();
-  protected state$: Observable<UI.State> = this.pm.observe();
-  private loginSubscription: Subscription;
-
   constructor(private loginService: LoginService) {
+    super(PM.create<UI.State>()
+      .setInitializer(() => {
+        return {
+          articleId: null,
+          loggedIn: false
+        };
+      })
+    );
   }
 
-  ngOnInit(): void {
-    this.loginSubscription = this.loginService.observeLoggedIn()
-      .subscribe(loggedIn => this.pm.update({loggedIn: loggedIn}));
+  onInit(): void {
+    this.pm.handleSubscription('login', this.loginService.observeLoggedIn()
+      .subscribe(loggedIn => this.pm.update({loggedIn: loggedIn}))
+    );
   }
 
-  ngOnDestroy(): void {
-    this.loginSubscription.unsubscribe();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
+  onChanges(changes: SimpleChanges): void {
     this.pm.update({articleId: this.articleId});
   }
 }

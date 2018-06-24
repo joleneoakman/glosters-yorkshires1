@@ -1,7 +1,8 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {Article} from '../../articles/models/article';
 import {ArticleService} from '../../articles/services/article.service';
 import {PM} from '../../../shared/util/pm';
+import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-snippet',
@@ -21,22 +22,22 @@ import {PM} from '../../../shared/util/pm';
   template: `
     <section [class.bg-snippet]="showBackground">
       <div class="container">
-        <div class="row align-items-center" *ngIf="(state$ | async)">
+        <div class="row align-items-center" *ngIf="(ui$ | async)">
           <div class="p-2 p-lg-5" [ngClass]="cardClasses()">
             <div [class.card]="showBorder">
               <div class="card-body">
                 <h2 class="card-title mb-4" *ngIf="showTitle">
-                  {{(state$ | async).title}}
+                  {{(ui$ | async).title}}
                 </h2>
-                <div class="card-text text-justify" [innerHTML]="(state$ | async).snippetText"></div>
-                <a *ngIf="showReadMore" class="pt-4 d-block" [routerLink]="['/article/' + (state$ | async).id]">Meer lezen &rarr;</a>
+                <div class="card-text text-justify" [innerHTML]="(ui$ | async).snippetText"></div>
+                <a *ngIf="showReadMore" class="pt-4 d-block" [routerLink]="['/article/' + (ui$ | async).id]">Meer lezen &rarr;</a>
               </div>
             </div>
           </div>
           <ng-container *ngIf="showReadMore">
             <div class="col-6 d-none d-lg-block text-center" [class.order-first]="!showTextLeft">
-              <button *ngIf="!(state$ | async).icon" class="btn btn-secondary d-inline-block px-auto" [routerLink]="['/article/' + (state$ | async).id]">Meer lezen &rarr;</button>
-              <a *ngIf="(state$ | async).icon" [routerLink]="['/article/' + (state$ | async).id]"><i class="text-secondary" [ngClass]="iconClass(state$ | async)"></i></a>
+              <button *ngIf="!(ui$ | async).icon" class="btn btn-secondary d-inline-block px-auto" [routerLink]="['/article/' + (ui$ | async).id]">Meer lezen &rarr;</button>
+              <a *ngIf="(ui$ | async).icon" [routerLink]="['/article/' + (ui$ | async).id]"><i class="text-secondary" [ngClass]="iconClass(ui$ | async)"></i></a>
             </div>
           </ng-container>
         </div>
@@ -44,7 +45,7 @@ import {PM} from '../../../shared/util/pm';
     </section>
   `
 })
-export class SnippetComponent implements OnChanges {
+export class SnippetComponent extends AbstractUi<Article> {
 
   @Input() articleId: string;
   @Input() showBackground: boolean = false;
@@ -53,17 +54,16 @@ export class SnippetComponent implements OnChanges {
   @Input() showBorder: boolean = true;
   @Input() showTitle: boolean = true;
 
-  protected pm: PM<Article> = PM.create<Article>().build();
-  protected state$ = this.pm.observe();
-
   constructor(private articleService: ArticleService) {
+    super(PM.create<Article>());
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.articleService.getArticle(this.articleId)
+  onChanges(changes: SimpleChanges): void {
+    this.pm.handleSubscription('article', this.articleService.observeArticle(this.articleId)
       .subscribe(article => {
         this.pm.update(article);
-      });
+      })
+    );
   }
 
   cardClasses() {

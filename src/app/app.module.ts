@@ -10,10 +10,12 @@ import {ArticlePageComponent} from './modules/glosters-yorkshires/pages/article-
 import {AdminPageComponent} from './modules/login/pages/admin-page.component';
 import {NavbarComponent} from './shared/components/navbar.component';
 import {FooterComponent} from './shared/components/footer.component';
+import {LoginPageComponent} from './modules/login/pages/login-page.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomePageComponent},
   {path: 'article/:id', component: ArticlePageComponent},
+  {path: 'login', component: LoginPageComponent},
   {path: 'admin', component: AdminPageComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: '**', redirectTo: '/home'}

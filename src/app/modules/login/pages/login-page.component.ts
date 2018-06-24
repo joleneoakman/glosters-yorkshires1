@@ -1,10 +1,11 @@
 import {Component} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
 import {LoginService} from '../login.service';
+import {Router} from '@angular/router';
 import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
-  selector: 'app-admin-page',
+  selector: 'app-login-page',
   styles: [`
     .page {
       margin-top: 150px;
@@ -12,12 +13,12 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
   `],
   template: `
     <main class="page">
-      <section *ngIf="(ui$ | async).loggedIn">
+      <section *ngIf="!(ui$ | async).loggedIn">
         <div class="container">
           <div class="row">
             <div class="col-md-6 mx-md-auto">
               <div class="card card-body">
-                <app-change-password-form></app-change-password-form>
+                <app-login-form></app-login-form>
               </div>
             </div>
           </div>
@@ -26,9 +27,10 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </main>
   `
 })
-export class AdminPageComponent extends AbstractUi<UI.State> {
+export class LoginPageComponent extends AbstractUi<UI.State> {
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: LoginService,
+              private router: Router) {
     super(PM.create<UI.State>());
   }
 
@@ -36,12 +38,11 @@ export class AdminPageComponent extends AbstractUi<UI.State> {
     this.pm.handleSubscription('login', this.loginService.observeLoggedIn()
       .subscribe(loggedIn => {
         this.pm.update({loggedIn: loggedIn});
+        if (loggedIn) {
+          this.router.navigate(['/about-us']); // Todo: refactor to auth guard (?)
+        }
       })
     );
-  }
-
-  onDestroy(): void {
-    this.pm.unsubscribeAll();
   }
 }
 

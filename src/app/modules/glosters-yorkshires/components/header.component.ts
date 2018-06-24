@@ -1,94 +1,108 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 import {ArticleService} from '../../articles/services/article.service';
+import {LoginService} from '../../login/login.service';
+import {PM} from '../../../shared/util/pm';
+import {AbstractUi} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-header',
   styles: [`
+
     .header {
-      margin-bottom: 10vh;
-      background: no-repeat fixed center top;
+      background: url('/assets/images/header.jpg') no-repeat fixed center top;
       -webkit-background-size: cover;
       background-size: cover;
     }
 
-    .container {
-      position: relative;
-      height: 65vh;
+    .header-desktop {
+      margin-bottom: 7vh;
     }
 
-    .header .header-image {
+    .header-mobile {
+      padding-top: 70px;
+      padding-bottom: 40px;
+      margin-bottom: 50px;
+    }
+
+    .spacer {
+      height: 50vh;
+      width: 100%;
+    }
+
+    .header-image {
       position: absolute;
-      left: 20px;
       bottom: 0;
     }
 
-    .header .header-text {
-      position: absolute;
-      right: 30px;
-      bottom: 0;
-      transform: translateY(25px);
-    }
-
-    .header .header-text .card {
+    .title-container {
       background-color: rgba(0, 77, 64, 0.9);
     }
 
-    .overlay {
+    .title {
+      font-size: 80px;
+      font-weight: 100;
+    }
+
+    .title-small {
+      font-size: 50px;
+      font-weight: 100;
+    }
+
+    .bird {
       width: 260px;
       height: 248px;
       margin-bottom: -25px;
     }
-    
-    .header-text h1 {
-      font-size: 60px;
-      font-weight: 100;
-    }
-    
-    .header-text-small {
-      padding: 5vh;
-      color: white;
-      background-color: rgb(0, 77, 64);
-      border-top: 10px white solid;
-    }
-    
-    .header-text-small h1 {
-      font-size: 40px;
-      font-weight: normal;
-    }
   `],
   template: `
-    <header class="header" [style.background-image]="'url(/assets/images/' + imageURL + ')'">
-      <div class="container">
-        <div class="d-flex">
-          <div class="header-image ml-lg-2" *ngIf="overlayURL">
-            <img [src]="'/assets/images/' + overlayURL" alt="Overlay" class="overlay">
-          </div>
-          <div class="header-text ml-auto d-none d-lg-block">
-            <div class="card card-body mx-auto text-white text-right">
-              <h1 style="white-space: pre;">{{title}}</h1>
+    <header class="header">
+      <!-- Desktop header -->
+      <div class="header-desktop d-none d-lg-block">
+        <div class="header-overlay">
+          <div class="spacer">&nbsp;</div>
+          <div class="title-container card text-white text-right">
+            <div class="container">
+              <div class="header-image">
+                <img [src]="'/assets/images/bird.png'" alt="Overlay" class="bird">
+              </div>
+              <h1 class="title ml-auto d-none d-lg-block pr-4" [innerHTML]="(ui$ | async).title | simpleText"></h1>
             </div>
           </div>
         </div>
       </div>
-      <div class="header-text-small d-lg-none d-flex text-center">
-        <h1 class="mx-auto" style="white-space: pre;">{{title}}</h1>
+
+      <!-- Mobile header -->
+      <div class="header-mobile title-container d-block d-lg-none">
+        <div class="container">
+          <h1 class="title-small text-white text-center" [innerHTML]="(ui$ | async).title | simpleText"></h1>
+        </div>
       </div>
     </header>
   `
 })
-export class HeaderComponent implements OnChanges {
+export class HeaderComponent extends AbstractUi<UI.State> {
 
   @Input() articleId: string;
-  @Input() imageURL: string = "header.jpg";
-  @Input() overlayURL: string = "bird.png";
 
-  protected title: string;
-
-  constructor(private articleService: ArticleService) {
+  constructor(private articleService: ArticleService,
+              private loginService: LoginService) {
+    super(PM.create<UI.State>());
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.articleService.getArticle(this.articleId)
-      .subscribe(article => this.title = article.title);
+  onInit(): void {
+    this.pm.handleSubscription('login', this.loginService.observeLoggedIn()
+      .subscribe(loggedIn => this.pm.update({loggedIn: loggedIn})));
+  }
+
+  onChanges(changes: SimpleChanges): void {
+    this.pm.handleSubscription('article', this.articleService.observeArticle(this.articleId)
+      .subscribe(article => this.pm.update({title: article.title})));
+  }
+}
+
+namespace UI {
+  export interface State {
+    loggedIn: boolean;
+    title: string;
   }
 }
