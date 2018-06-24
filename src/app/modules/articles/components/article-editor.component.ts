@@ -3,7 +3,7 @@ import {Article} from '../models/article';
 import {PM} from '../../../shared/util/pm';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ArticleService} from '../services/article.service';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-article-editor',
@@ -103,7 +103,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </section>
   `
 })
-export class ArticleEditorComponent extends AbstractUi<UI.State> {
+export class ArticleEditorComponent extends AbstractUI<UI.State> {
 
   @Input() articleId: string;
 

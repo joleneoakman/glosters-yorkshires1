@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/co
 import {Article} from '../models/article';
 import {ArticleService} from '../services/article.service';
 import {PM} from '../../../shared/util/pm';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-article-view',
@@ -19,7 +19,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </div>
   `
 })
-export class ArticleViewComponent extends AbstractUi<Article> {
+export class ArticleViewComponent extends AbstractUI<Article> {
 
   @Input() articleId: string;
   @Output() articleChanged: EventEmitter<Article> = new EventEmitter<Article>();

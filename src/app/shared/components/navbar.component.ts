@@ -1,8 +1,7 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {PM} from '../util/pm';
 import {LoginService} from '../../modules/login/login.service';
-import {Subscription} from 'rxjs';
-import {AbstractUi} from '../util/abstract-ui';
+import {AbstractUI} from '../util/abstract-ui';
 
 @Component({
   selector: 'app-navbar',
@@ -106,7 +105,7 @@ import {AbstractUi} from '../util/abstract-ui';
     </nav>
   `
 })
-export class NavbarComponent extends AbstractUi<UI.State> {
+export class NavbarComponent extends AbstractUI<UI.State> {
 
   @ViewChild('navbarToggler') navbarToggler: ElementRef;
 

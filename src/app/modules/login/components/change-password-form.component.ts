@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LoginService} from '../login.service';
 import {PM} from '../../../shared/util/pm';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-change-password-form',
@@ -47,7 +47,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </form>
   `
 })
-export class ChangePasswordFormComponent extends AbstractUi<UI.State> {
+export class ChangePasswordFormComponent extends AbstractUI<UI.State> {
 
   constructor(private loginService: LoginService) {
     super(PM.create<UI.State>())

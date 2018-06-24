@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 import {PM} from '../../../shared/util/pm';
 
 @Component({
@@ -12,7 +12,7 @@ import {PM} from '../../../shared/util/pm';
     </main>
   `
 })
-export class ArticlePageComponent extends AbstractUi<UI.State> {
+export class ArticlePageComponent extends AbstractUI<UI.State> {
 
   constructor(private route: ActivatedRoute) {
     super(PM.create<UI.State>());

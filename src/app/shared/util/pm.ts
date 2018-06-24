@@ -1,5 +1,4 @@
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {EventEmitter} from '@angular/core';
 
 /**
  * Very basic presentation model for local UI state management

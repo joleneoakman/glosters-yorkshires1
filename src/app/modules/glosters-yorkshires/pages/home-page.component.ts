@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LoginService} from '../../login/login.service';
 import {PM} from '../../../shared/util/pm';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-home-page',
@@ -19,7 +19,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </main>
   `
 })
-export class HomePageComponent extends AbstractUi<UI.State> {
+export class HomePageComponent extends AbstractUI<UI.State> {
 
   constructor(private loginService: LoginService) {
     super(PM.create<UI.State>());

@@ -2,7 +2,7 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 import {ArticleService} from '../../articles/services/article.service';
 import {LoginService} from '../../login/login.service';
 import {PM} from '../../../shared/util/pm';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-header',
@@ -80,7 +80,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </header>
   `
 })
-export class HeaderComponent extends AbstractUi<UI.State> {
+export class HeaderComponent extends AbstractUI<UI.State> {
 
   @Input() articleId: string;
 

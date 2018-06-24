@@ -2,7 +2,7 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 import {Article} from '../../articles/models/article';
 import {ArticleService} from '../../articles/services/article.service';
 import {PM} from '../../../shared/util/pm';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-snippet',
@@ -45,7 +45,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </section>
   `
 })
-export class SnippetComponent extends AbstractUi<Article> {
+export class SnippetComponent extends AbstractUI<Article> {
 
   @Input() articleId: string;
   @Input() showBackground: boolean = false;

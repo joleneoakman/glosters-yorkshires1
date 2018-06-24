@@ -1,7 +1,7 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
 import {LoginService} from '../../login/login.service';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-article',
@@ -12,7 +12,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
                         [articleId]="(ui$ | async).articleId"></app-article-editor>
   `
 })
-export class ArticleComponent extends AbstractUi<UI.State> {
+export class ArticleComponent extends AbstractUI<UI.State> {
 
   @Input() articleId: string;
 

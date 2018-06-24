@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
 import {LoginService} from '../login.service';
 import {Router} from '@angular/router';
-import {AbstractUi} from '../../../shared/util/abstract-ui';
+import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
   selector: 'app-login-page',
@@ -27,7 +27,7 @@ import {AbstractUi} from '../../../shared/util/abstract-ui';
     </main>
   `
 })
-export class LoginPageComponent extends AbstractUi<UI.State> {
+export class LoginPageComponent extends AbstractUI<UI.State> {
 
   constructor(private loginService: LoginService,
               private router: Router) {
