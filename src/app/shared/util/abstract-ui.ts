@@ -2,7 +2,7 @@ import {PM, PMBuilder} from './pm';
 import {Observable} from 'rxjs';
 import {OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 
-export abstract class AbstractUi<S> implements OnInit, OnChanges, OnDestroy {
+export abstract class AbstractUI<S> implements OnInit, OnChanges, OnDestroy {
 
   protected readonly pm: PM<S>;
   protected readonly ui$: Observable<S>;
