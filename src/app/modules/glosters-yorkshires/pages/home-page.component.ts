@@ -8,7 +8,7 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
   template: `
     <main class="bg-white">
       <app-header articleId="about-us"></app-header>
-      <app-article articleId="about-us"></app-article>
+      <app-article articleId="about-us" [showShortText]="false"></app-article>
       
       <ng-container *ngIf="!(ui$ | async).loggedIn">
         <app-snippet articleId="glosters" [showBackground]="true" [showTextLeft]="true"></app-snippet>

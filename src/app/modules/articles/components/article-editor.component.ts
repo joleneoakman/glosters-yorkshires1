@@ -50,7 +50,7 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
       <div class="container card card-body">
 
         <div class="alert alert-warning" role="alert">
-          Hieronder kan u de website tekst aanpassen, en vervolgens op 'bewaren' klikken.
+          Hieronder kan u de website tekst aanpassen, en aanpassingen bevestigen via klikken op 'bewaren' (onderaan).
         </div>
 
         <div class="row">
@@ -64,8 +64,8 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-lg-2 label text-dark">Korte tekst</div>
+        <div class="row" *ngIf="showShortText">
+          <div class="col-lg-2 label text-dark">Startpagina tekst</div>
           <div class="col-lg-10">
             <textarea id="snippetText"
                       autoresize
@@ -106,6 +106,7 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
 export class ArticleEditorComponent extends AbstractUI<UI.State> {
 
   @Input() articleId: string;
+  @Input() showShortText: boolean;
 
   constructor(private articleService: ArticleService) {
     super(PM.create<UI.State>()

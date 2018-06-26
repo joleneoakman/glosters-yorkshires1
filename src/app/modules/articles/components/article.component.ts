@@ -9,12 +9,14 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
     <app-article-view *ngIf="!(ui$ | async).loggedIn"
                       [articleId]="(ui$ | async).articleId"></app-article-view>
     <app-article-editor *ngIf="(ui$ | async).loggedIn"
-                        [articleId]="(ui$ | async).articleId"></app-article-editor>
+                        [articleId]="(ui$ | async).articleId"
+                        [showShortText]="showShortText"></app-article-editor>
   `
 })
 export class ArticleComponent extends AbstractUI<UI.State> {
 
   @Input() articleId: string;
+  @Input() showShortText: boolean = true;
 
   constructor(private loginService: LoginService) {
     super(PM.create<UI.State>()
