@@ -1,27 +1,37 @@
 import {Injectable} from '@angular/core';
 import {Article} from '../models/article';
-import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, observable, Observable, pipe, throwError} from 'rxjs';
 import {distinctUntilChanged, map} from 'rxjs/operators';
+import {Store} from '../../../shared/store/store.service';
+import {Segment} from '../../../shared/store/segment';
+import {ArticleState} from '../models/article-state';
 
 @Injectable()
 export class ArticleService {
 
-  private articles: BehaviorSubject<Article[]>;
+  private segment: Segment<ArticleState>;
 
-  constructor() {
-    // Todo: remote call & lazy
-    this.articles = new BehaviorSubject<Article[]>(this.loadArticles());
+  constructor(private store: Store) {
+    this.segment = this.store.initialize('article', {articles: []});
+
+    // Todo: lazy loading
+    this.loadArticles();
   }
 
-  updateArticle(article: Article) {
-    // Todo: remove call & (optimally) reload articles
-    const articles = this.articles.getValue();
+  updateArticle(article: Article): Observable<Article> {
+
+    const articles = this.segment.getState().articles;
     const index = articles.findIndex(cur => cur.id === article.id);
     if (index === -1) {
       return throwError('Unknown article id!');
     }
     articles[index] = article;
-    this.articles.next(articles);
+
+    // Todo: remove call & (optimally) reload articles
+    this.segment.update({articles: articles});
+
+    // Return observable to article
+    return this.observeArticle(article.id);
   }
 
   public observeArticle(id: string): Observable<Article> {
@@ -32,17 +42,19 @@ export class ArticleService {
       snippetText: '',
       fullText: ''
     };
-    return this.articles.pipe(
-      map(articles => {
-        return articles
-          .filter(article => article.id === id)
-          .reduce((previousValue, currentValue) => !currentValue ? previousValue : currentValue, dummyArticle)
-      }),
-      distinctUntilChanged()
+    return this.segment.pipe(
+      pipe(
+        map(articleState => {
+          return articleState.articles
+            .filter(article => article.id === id)
+            .reduce((previousValue, currentValue) => !currentValue ? previousValue : currentValue, dummyArticle);
+        }),
+        distinctUntilChanged()
+      )
     );
   }
 
-  private loadArticles(): Article[] {
+  private loadArticles() {
     const articles: Article[] = [];
 
     articles.push({
@@ -165,7 +177,7 @@ Tel: +32 15 22 66 87 (Johan)
 Email: johanpeeters1@telenet.be`
     });
 
-    return articles;
+    this.segment.update({articles: articles});
   }
 
 }

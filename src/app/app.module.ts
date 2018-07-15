@@ -4,13 +4,13 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from '@angular/router';
 import {GlostersYorkshiresModule} from './modules/glosters-yorkshires/glosters-yorkshires.module';
-import {LoginModule} from './modules/login/login.module';
+import {AuthModule} from './modules/auth/auth.module';
 import {HomePageComponent} from './modules/glosters-yorkshires/pages/home-page.component';
 import {ArticlePageComponent} from './modules/glosters-yorkshires/pages/article-page.component';
-import {AdminPageComponent} from './modules/login/pages/admin-page.component';
+import {AdminPageComponent} from './modules/auth/pages/admin-page.component';
 import {NavbarComponent} from './shared/components/navbar.component';
 import {FooterComponent} from './shared/components/footer.component';
-import {LoginPageComponent} from './modules/login/pages/login-page.component';
+import {LoginPageComponent} from './modules/auth/pages/login-page.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomePageComponent},
@@ -31,7 +31,7 @@ const appRoutes: Routes = [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     GlostersYorkshiresModule,
-    LoginModule
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

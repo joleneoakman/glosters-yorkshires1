@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
-import {LoginService} from '../../login/login.service';
+import {AuthService} from '../../auth/auth.service';
 import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
@@ -18,7 +18,7 @@ export class ArticleComponent extends AbstractUI<UI.State> {
   @Input() articleId: string;
   @Input() showShortText: boolean = true;
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: AuthService) {
     super(PM.create<UI.State>()
       .setInitializer(() => {
         return {

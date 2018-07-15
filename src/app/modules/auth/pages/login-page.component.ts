@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
-import {LoginService} from '../login.service';
+import {AuthService} from '../auth.service';
 import {Router} from '@angular/router';
 import {AbstractUI} from '../../../shared/util/abstract-ui';
 
@@ -29,7 +29,7 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
 })
 export class LoginPageComponent extends AbstractUI<UI.State> {
 
-  constructor(private loginService: LoginService,
+  constructor(private loginService: AuthService,
               private router: Router) {
     super(PM.create<UI.State>());
   }

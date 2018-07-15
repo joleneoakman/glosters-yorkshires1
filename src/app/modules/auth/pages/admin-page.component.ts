@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {PM} from '../../../shared/util/pm';
-import {LoginService} from '../login.service';
+import {AuthService} from '../auth.service';
 import {AbstractUI} from '../../../shared/util/abstract-ui';
 
 @Component({
@@ -28,7 +28,7 @@ import {AbstractUI} from '../../../shared/util/abstract-ui';
 })
 export class AdminPageComponent extends AbstractUI<UI.State> {
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: AuthService) {
     super(PM.create<UI.State>());
   }
 

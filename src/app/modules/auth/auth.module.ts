@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {LoginFormComponent} from './components/login-form.component';
 import {AdminPageComponent} from './pages/admin-page.component';
-import {LoginService} from './login.service';
+import {AuthService} from './auth.service';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ChangePasswordFormComponent} from './components/change-password-form.component';
@@ -19,8 +19,8 @@ import {LoginPageComponent} from './pages/login-page.component';
     FormsModule
   ],
   providers: [
-    LoginService
+    AuthService
   ]
 })
-export class LoginModule {
+export class AuthModule {
 }

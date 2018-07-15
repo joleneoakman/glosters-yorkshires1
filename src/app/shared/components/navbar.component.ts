@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {PM} from '../util/pm';
-import {LoginService} from '../../modules/login/login.service';
+import {AuthService} from '../../modules/auth/auth.service';
 import {AbstractUI} from '../util/abstract-ui';
 
 @Component({
@@ -109,7 +109,7 @@ export class NavbarComponent extends AbstractUI<UI.State> {
 
   @ViewChild('navbarToggler') navbarToggler: ElementRef;
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: AuthService) {
     super(PM.create<UI.State>()
       .setInitializer(UI.initializer)
     );

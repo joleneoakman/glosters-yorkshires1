@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {ArticleService} from './services/article.service';
 import {ArticleComponent} from './components/article.component';
 import {ArticleEditorComponent} from './components/article-editor.component';
-import {LoginModule} from '../login/login.module';
+import {AuthModule} from '../auth/auth.module';
 import {ArticleViewComponent} from './components/article-view.component';
 import {FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -22,7 +22,7 @@ import {SharedModule} from '../../shared/shared.module';
     FormsModule,
     CommonModule,
     SharedModule,
-    LoginModule
+    AuthModule
   ],
   exports: [
     ArticleComponent

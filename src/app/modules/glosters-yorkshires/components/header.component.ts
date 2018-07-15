@@ -1,6 +1,6 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {ArticleService} from '../../articles/services/article.service';
-import {LoginService} from '../../login/login.service';
+import {AuthService} from '../../auth/auth.service';
 import {PM} from '../../../shared/util/pm';
 import {AbstractUI} from '../../../shared/util/abstract-ui';
 
@@ -85,7 +85,7 @@ export class HeaderComponent extends AbstractUI<UI.State> {
   @Input() articleId: string;
 
   constructor(private articleService: ArticleService,
-              private loginService: LoginService) {
+              private loginService: AuthService) {
     super(PM.create<UI.State>());
   }
 
